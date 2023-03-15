@@ -1,26 +1,50 @@
+import React, {useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Platform } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Platform, KeyboardAvoidingView, Keyboard, Image,TouchableWithoutFeedback } from 'react-native';
 
 export default function RegistrationScreen() {
+  console.log(Platform.OS)
+
+  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+
+  const keyboardHide = () => {
+    setIsShowKeyboard(false);
+    Keyboard.dismiss();
+  }
   return (
-    <View style={styles.container}>
-     
-      <View>
+    <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}>
+      <TouchableWithoutFeedback onPress={keyboardHide}>
+      {/* <View style={styles.container}> */}
+      <View style={{...styles.container, paddingBottom: isShowKeyboard ? 10 : 100}}>
+        <View>
+         <Image
+        style={styles.avatar}
+        source={require("../assets/images/defaultAvatar.jpg")}
+      />
+      </View>
+        
+        
+        <View>
         <Text style={styles.text}>Регистрация</Text>
       </View>
+      
       <View style={styles.form}>
         <View>
         <TextInput
           style={styles.input}
             textAlign={'left'}
-            placeholder="Логин" />
+              placeholder="Логин"
+            onFocus={() => setIsShowKeyboard(true)}/>
 
         </View>
          <View style={{marginTop: 16}}>
         <TextInput
           style={styles.input}
             textAlign={'left'}
-            placeholder="Адрес электронной почты" />
+              placeholder="Адрес электронной почты"
+            onFocus={() => setIsShowKeyboard(true)}/>
 
         </View>
           <View style={{marginTop: 16}}>
@@ -28,28 +52,36 @@ export default function RegistrationScreen() {
           style={styles.input}
             textAlign={'left'}
             placeholder="Пароль"
-            secureTextEntry={true} />
+              secureTextEntry={true}
+            onFocus={() => setIsShowKeyboard(true)}/>
           
 
         </View>
         <TouchableOpacity style={styles.button}
-          activeOpacity={0.8}>
+            activeOpacity={0.8}
+          onPress={keyboardHide}>
           <Text style={styles.btnText}>
             Зарегистрироваться
           </Text>
-        </TouchableOpacity>
-       </View>
+          </TouchableOpacity>
+          
+        </View>
+       
         {/* <StatusBar style="auto" /> */}
        
-    </View>
+        </View>
+        </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     // flex: 1,
+    
     width: '100%',
-    height: 549,
+    // height: 549,
+    // paddingBottom: 100,
     backgroundColor: '#FFFFFF',
     borderRadius: "25px 25px 0px 0px" ,
     // alignItems: 'center',
@@ -60,7 +92,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#212121',
     marginBottom: 33,
-    marginTop: 92,
+    marginTop: 32,
   },
   // image: 
   //   flex: 1,
@@ -84,6 +116,7 @@ const styles = StyleSheet.create({
   form: {
     marginHorizontal: 32,
     
+    
 // marginBottom: 16,
   },
 
@@ -98,6 +131,25 @@ const styles = StyleSheet.create({
   btnText: {
     color: '#FFFFFF',
     fontSize: 16,
+  },
+  keyboardContainer: {
+      width: '100%',
+    height: 549,
+    backgroundColor: '#FFFFFF',
+    borderRadius: "25px 25px 0px 0px" ,
+    // alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
+  avatar: {
+
+width: 120,
+height: 120,
+marginLeft: 150,
+    marginTop: -60,
+border: 2,
+    borderColor: '#F6F6F6',
+background: '#5f9ea0',
+borderRadius: 16,
   }
 });
 
