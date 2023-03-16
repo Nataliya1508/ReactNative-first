@@ -1,23 +1,62 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Platform, KeyboardAvoidingView, Keyboard, Image,TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Platform, KeyboardAvoidingView, Keyboard, Image,TouchableWithoutFeedback, Dimensions } from 'react-native';
+import * as Font from 'expo-font';
+import { Apploading } from 'expo';
+const initialState = {
+  login: "",
+  email: "",
+  password: "",
+};
+
+// const loadFonts = async () => {
+//   await Font.loadAsync({
+//     'Roboto': require('../assets/fonts/Roboto-Black.ttf')
+//   })
+// }
+
 
 export default function RegistrationScreen() {
   console.log(Platform.OS)
 
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+  const [state, setState] = useState(initialState);
+  const [isReady, setIsReady] = useState(false);
+  const [dimentions, setDimentions] = useState(Dimensions.get("window").width);
+  useEffect(() => {
+    const onChange = () => {
+      const width = Dimensions.get("window").width - 16 * 2;
+      setDimentions(width)
+      console.log("width", width);
+    }
+    Dimensions.addEventListener("change", onChange);
+    return () => {
+    
+      Dimensions.removeEventListener("change", onChange);
+    }
+  }, [])
 
   const keyboardHide = () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
+    console.log(state);
+    setState(initialState);
   }
+
+  // if (!isReady) {
+  //   return <Apploading 
+  //     startAsync={loadFonts}
+  //     onFinish={() => setIsReady(true)}
+  //     onError={console.warn}
+  //   />
+  // }
   return (
     <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}>
       <TouchableWithoutFeedback onPress={keyboardHide}>
       {/* <View style={styles.container}> */}
-      <View style={{...styles.container, paddingBottom: isShowKeyboard ? 10 : 100}}>
+      <View style={{...styles.container, width: dimentions, paddingBottom: isShowKeyboard ? 10 : 100}}>
         <View>
          <Image
         style={styles.avatar}
@@ -36,7 +75,9 @@ export default function RegistrationScreen() {
           style={styles.input}
             textAlign={'left'}
               placeholder="Логин"
-            onFocus={() => setIsShowKeyboard(true)}/>
+                onFocus={() => setIsShowKeyboard(true)}
+                value={state.login}
+              onChangeText={(value) => setState((prevState) => ({...prevState, login: value}))}/>
 
         </View>
          <View style={{marginTop: 16}}>
@@ -44,7 +85,9 @@ export default function RegistrationScreen() {
           style={styles.input}
             textAlign={'left'}
               placeholder="Адрес электронной почты"
-            onFocus={() => setIsShowKeyboard(true)}/>
+                onFocus={() => setIsShowKeyboard(true)}
+                value={state.email}
+              onChangeText={(value) => setState((prevState) => ({...prevState, email: value}))}/>
 
         </View>
           <View style={{marginTop: 16}}>
@@ -53,7 +96,9 @@ export default function RegistrationScreen() {
             textAlign={'left'}
             placeholder="Пароль"
               secureTextEntry={true}
-            onFocus={() => setIsShowKeyboard(true)}/>
+                onFocus={() => setIsShowKeyboard(true)}
+                value={state.password}
+              onChangeText={(value) => setState((prevState) => ({...prevState, password: value}))}/>
           
 
         </View>
@@ -83,12 +128,15 @@ const styles = StyleSheet.create({
     // height: 549,
     // paddingBottom: 100,
     backgroundColor: '#FFFFFF',
-    borderRadius: "25px 25px 0px 0px" ,
+    borderRadius: "25px 25px 0px 0px",
+    // justifyContent: 'center',
     // alignItems: 'center',
     justifyContent: 'flex-start',
+    
   },
   text: {
     fontSize: 30,
+    // fontFamily: 'Roboto',
     textAlign: 'center',
     color: '#212121',
     marginBottom: 33,
@@ -115,7 +163,7 @@ const styles = StyleSheet.create({
 
   form: {
     marginHorizontal: 32,
-    
+   
     
 // marginBottom: 16,
   },
@@ -144,7 +192,7 @@ const styles = StyleSheet.create({
 
 width: 120,
 height: 120,
-marginLeft: 150,
+marginLeft: 155,
     marginTop: -60,
 border: 2,
     borderColor: '#F6F6F6',
